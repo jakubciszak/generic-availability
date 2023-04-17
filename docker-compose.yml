@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  php:
+    build: ./.docker
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
