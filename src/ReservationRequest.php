@@ -28,10 +28,14 @@ class ReservationRequest
     public function __construct(
             public readonly Period $period,
             public readonly GenericList $requestedResources,
-            public readonly GenericList $policies
+            private ?GenericList $policies = null
     ) {
         $this->reservedResources = GenericList::empty();
         $this->errors = GenericList::empty();
+        $this->events = GenericList::empty();
+        if ($this->policies === null) {
+            $this->policies = GenericList::empty();
+        }
         $this->registerEvent(new ReservationRequested($this));
     }
 
@@ -57,9 +61,7 @@ class ReservationRequest
                 fn(Resource $resource) => $this->tryToReserveResource($resource)
         );
         $satisfiedPolicies = $this->policies->filter(fn(Policy $policy) => $policy->isSatisfiedBy($this));
-        if (!$this->reservedResources->isEmpty()
-                && $this->policies->equals($satisfiedPolicies)
-        ) {
+        if ($this->policies->equals($satisfiedPolicies)) {
             $this->reservedResources->forEach(
                     fn(Resource $resource) => $this->registerEvent(new ResourceReserved($resource))
             );
