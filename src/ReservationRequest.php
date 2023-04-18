@@ -2,7 +2,6 @@
 
 namespace Jakubciszak\GenericAvailability;
 
-use Jakubciszak\GenericAvailability\Common\TheId;
 use Jakubciszak\GenericAvailability\Event\ReservationRequested;
 use Jakubciszak\GenericAvailability\Event\ResourceReserved;
 use Jakubciszak\GenericAvailability\Exception\PeriodsOverlapsException;
@@ -27,9 +26,9 @@ class ReservationRequest
      * @param GenericList<Policy> $policies
      */
     public function __construct(
-        public readonly Period $period,
-        public readonly GenericList $requestedResources,
-        public readonly GenericList $policies
+            public readonly Period $period,
+            public readonly GenericList $requestedResources,
+            public readonly GenericList $policies
     ) {
         $this->reservedResources = GenericList::empty();
         $this->errors = GenericList::empty();
@@ -55,20 +54,16 @@ class ReservationRequest
     public function reserve(): ?Reservation
     {
         $this->reservedResources = $this->requestedResources->filter(
-            fn(Resource $resource) => $this->tryToReserveResource($resource)
+                fn(Resource $resource) => $this->tryToReserveResource($resource)
         );
         $satisfiedPolicies = $this->policies->filter(fn(Policy $policy) => $policy->isSatisfiedBy($this));
         if (!$this->reservedResources->isEmpty()
-            && $this->policies->equals($satisfiedPolicies)
+                && $this->policies->equals($satisfiedPolicies)
         ) {
             $this->reservedResources->forEach(
-                fn(Resource $resource) => $this->registerEvent(new ResourceReserved($resource))
+                    fn(Resource $resource) => $this->registerEvent(new ResourceReserved($resource))
             );
-            return new Reservation(
-                TheId::generate(),
-                $this->period,
-                $this->reservedResources
-            );
+            return Reservation::createFromRequest($this);
         }
         return null;
     }
