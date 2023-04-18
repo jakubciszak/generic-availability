@@ -14,10 +14,15 @@ class Reservation
     private GenericList $events;
     private bool $cancelled = false;
 
-    public function __construct(
-        public readonly TheId $reservationId,
-        public readonly Period $period,
-        public readonly GenericList $reservedResources
+    public static function createFromRequest(ReservationRequest $request): Reservation
+    {
+        return new self(TheId::generate(), $request->period, $request->reservedResources());
+    }
+
+    private function __construct(
+            public readonly TheId $reservationId,
+            public readonly Period $period,
+            public readonly GenericList $reservedResources
     ) {
         $this->events = GenericList::empty();
         $this->registerEvent(new ReservationCreated($this));
