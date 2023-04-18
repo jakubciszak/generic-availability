@@ -1,4 +1,3 @@
 /.idea
-composer.json
 /vendor
 .phpunit.result.cache

@@ -14,7 +14,7 @@ class Resource
     private GenericList $reservedPeriods;
 
     public function __construct(
-        public readonly TheId $resourceId,
+            public readonly TheId $resourceId,
     ) {
         $this->reservedPeriods = GenericList::empty();
     }
@@ -24,7 +24,7 @@ class Resource
      */
     public function reserve(Period $period): void
     {
-        if ($this->isAvailableOn($period)) {
+        if (!$this->isAvailableOn($period)) {
             throw new PeriodsOverlapsException('Periods are overlapping.');
         }
         $this->reservedPeriods = $this->reservedPeriods->append($period);

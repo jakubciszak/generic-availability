@@ -1,0 +1,24 @@
+{
+  "name": "jakubciszak/generic-availability",
+  "description": "Basic generic subdomain - availability.",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Jakubciszak\\GenericAvailability\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Jakub Ciszak",
+      "email": "j.ciszak@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "munusphp/munus": "^0.4.0",
+    "ramsey/uuid": "^4.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  }
+}
